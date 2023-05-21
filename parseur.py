@@ -1,48 +1,25 @@
 import bencodepy
 
 def parse_torrent_file(torrent_file_path):
-    with open(torrent_file_path, 'rb') as file:
-        data = file.read()
-
-    torrent_data = bencodepy.decode(data)
-
+    with open(torrent_file_path, 'rb') as f:
+        torrent_data = bencodepy.decode(f.read())
     print(torrent_data)
-    info = torrent_data['info']
-    announce = torrent_data['announce']
-    piece_length = info['piece length']
-    name = info['name']
-    files = []
-    is_private = False
-    trackers = []
-    comment = ""
+    info = torrent_data[b'info']
+    announce = torrent_data[b'announce']
+    file_name = info[b'name']
+    file_size = info[b'length'] # if 'length' in info else sum(f['length'] for f in info[b'files'])
+    piece_length = info[b'piece length']
+    pieces = info[b'pieces']
 
-    if 'comment' in torrent_data:
-        comment = torrent_data['comment']
+    print('Torrent Information:')
+    print('===================')
+    print(f'Tracker: {announce}')
+    print(f'File Name: {file_name}')
+    print(f'File Size: {file_size} bytes')
+    print(f'Piece Length: {piece_length} bytes')
+    print(f'Number of Pieces: {len(pieces) // 20}')
 
-    if 'announce-list' in torrent_data:
-        for tracker_list in torrent_data['announce-list']:
-            for tracker in tracker_list:
-                trackers.append(tracker.decode())
+    # You can add more code here to extract additional information if needed
 
-    if 'private' in torrent_data:
-        is_private = bool(torrent_data['private'])
-
-    if 'files' in info:
-        for file_info in info['files']:
-            file_path = '/'.join(file_info['path'])
-            file_size = file_info['length']
-            files.append({'path': file_path, 'size': file_size})
-
-    return {
-        'announce': announce,
-        'piece_length': piece_length,
-        'name': name,
-        'files': files,
-        'is_private': is_private,
-        'trackers': trackers,
-        'comment': comment
-    }
-# Example usage
-torrent_file_path = r'C:\Users\thoma\Downloads\Le_Parisien_-_22_Mai_2023.pdf.torrent'
-torrent_info = parse_torrent_file(torrent_file_path)
-print(torrent_info)
+# Usage example
+parse_torrent_file('C:/Users/thoma/Downloads/311D839C204D5D527FDF1084C0906258DF936427.torrent')
