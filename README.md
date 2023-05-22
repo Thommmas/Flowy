@@ -1,2 +1,2 @@
 # Flowy
-Python torrent client 
+Torrent client 
