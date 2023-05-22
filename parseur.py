@@ -22,4 +22,4 @@ def parse_torrent_file(torrent_file_path):
     # You can add more code here to extract additional information if needed
 
 # Usage example
-parse_torrent_file('C:/Users/thoma/Downloads/311D839C204D5D527FDF1084C0906258DF936427.torrent')
+parse_torrent_file('Your file .torrent')
